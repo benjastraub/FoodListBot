@@ -15,7 +15,8 @@ from collections import defaultdict
 class FoodList:
     def __init__(self):
         # stores the needed ingridients
-        self.list = defaultdict(int)
+        # ingridient_name: [ingridient_instance, quantity]
+        self.list = dict()
         # stores the instances of the meals according to the DB
         self.meal_list = None  # it'll be a dictionary when loaded
         # stores the instances of the ingridients according to the DB
@@ -176,7 +177,27 @@ class FoodList:
         self.dispatcher.add_handler(unknown_handler)
 
     def text_message(self, update, context):
-        pass
+        if self.adding_meals:
+            typed_meal = update.message.text
+            meal = self.meal_list.get(typed_meal)
+            for ingridient in meal.ingridients:
+                if ingridient.name in self.list.keys():
+                    self.list[ingridient.name][1] += 1
+                else:
+                    self.list[ingridient.name] = [ingridient, 1]
+        elif self.adding_ingridients:
+            typed_ingridient = update.message.text
+            ingridient = self.ingridients.get(typed_ingridient)
+            if ingridient.name in self.list.keys():
+                self.list[ingridient.name][1] += 1
+            else:
+                self.list[ingridient.name] = [ingridient, 1]
+        elif self.removing_ingridients:
+            typed_ingridient = update.message.text
+            if typed_ingridient in self.list.keys():
+                self.list[typed_ingridient][1] -= 1
+                if self.list[typed_ingridient][1] == 0:
+                    del self.list[typed_ingridient]
 
     def file_message(self, update, context):
         if self.loading_meals:
@@ -229,13 +250,25 @@ class FoodList:
         self.loading_ingridients = True
 
     def add_ingridients(self, update, context):
-        pass
+        self.keyboard = "add_ingridients"
+        self.adding_ingridients = True
+        to_write = functions.list_to_text(sorted(self.list.items(),
+                                          key=lambda k: k[0].category))
+        self.send_message(update, context, to_write)
 
     def remove_ingridients(self, update, context):
-        pass
+        self.keyboard = "remove_ingridients"
+        self.removing_ingridients = True
+        to_write = functions.list_to_text(sorted(self.list.items(),
+                                          key=lambda k: k[0].category))
+        self.send_message(update, context, to_write)
 
     def add_meals(self, update, context):
-        pass
+        self.keyboard = "add_meals"
+        self.adding_meals = True
+        to_write = functions.list_to_text(sorted(self.list.items(),
+                                          key=lambda k: k[0].category))
+        self.send_message(update, context, to_write)
 
     def stop(self, update, context):
         pass
