@@ -17,7 +17,7 @@ class FoodList:
         # stores the needed ingridients
         self.list = defaultdict(int)
         # stores the instances of the meals according to the DB
-        self.meal_list = None  # it'll be a list when loaded
+        self.meal_list = None  # it'll be a dictionary when loaded
         # stores the instances of the ingridients according to the DB
         self.ingridients = None  # it'll be a dictionary when loaded
         # booleans to check state of the script
@@ -114,7 +114,14 @@ class FoodList:
 
     @keyboard.setter
     def keyboard(self, value):
-        pass
+        if value is None:
+            self._keyboard = telegram.ReplyKeyboardRemove()
+        elif value == "add_ingridients":
+            self._keyboard = [[key] for key in self.ingridients]
+        elif value == "remove_ingridients":
+            self._keyboard = [[key] for key in self.list]
+        elif value == "add_meals":
+            self._keyboard = [[key] for key in self.meal_list]
 
     def telegram_bot_init(self):
         # ussed for debugging
@@ -171,7 +178,7 @@ class FoodList:
     def file_message(self):
         pass
 
-    def start_handler(self):
+    def start(self):
         pass
 
     def load_meals(self):
