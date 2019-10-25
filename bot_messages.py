@@ -20,6 +20,8 @@ Si quieres actualizar tus ingredientes o comidas puedes volver a utilizar\
  /load_ingridients y envía el archivo con los ingredientes. Para terminar\
  la configuración ocupa el comando /start",
     "stop": "Adios",
-    "unknown": "No conozco ese comando"
+    "unknown": "No conozco ese comando",
+    "load_meals": "Envía el archivo con las comidas",
+    "load_ingridients": "Envía el archivo con los ingredientes"
 }
 MESSAGES["help"] = MESSAGES["start2"]

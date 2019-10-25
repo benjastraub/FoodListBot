@@ -179,7 +179,15 @@ class FoodList:
         pass
 
     def file_message(self, update, context):
-        pass
+        if self.loading_meals:
+            file_type = "_meals"
+        elif self.load_ingridients:
+            file_type = "_ingridients"
+        else:
+            return 0
+        file_name = str(update.message.chat.id) + file_type + ".csv"
+        file = context.bot.get_file(update.message.document.file_id)
+        file.download(file_name)
 
     def start(self, update, context):
         # we get user language
@@ -211,10 +219,14 @@ class FoodList:
             self.send_message(update, context, to_write)
 
     def load_meals(self, update, context):
-        pass
+        to_write = MESSAGES["load_meals"]
+        self.send_message(update, context, to_write)
+        self.loading_meals = True
 
     def load_ingridients(self, update, context):
-        pass
+        to_write = MESSAGES["load_ingridients"]
+        self.send_message(update, context, to_write)
+        self.loading_ingridients = True
 
     def add_ingridients(self, update, context):
         pass
