@@ -1,6 +1,9 @@
 # project related
 token_key.py
 *.txt
+*.xlsx
+*.ai
+*.csv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -106,3 +109,6 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# mac
+.DS_Store
