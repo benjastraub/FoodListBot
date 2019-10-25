@@ -240,11 +240,13 @@ class FoodList:
             self.send_message(update, context, to_write)
 
     def load_meals(self, update, context):
+        self.keyboard = None
         to_write = MESSAGES["load_meals"]
         self.send_message(update, context, to_write)
         self.loading_meals = True
 
     def load_ingridients(self, update, context):
+        self.keyboard = None
         to_write = MESSAGES["load_ingridients"]
         self.send_message(update, context, to_write)
         self.loading_ingridients = True
@@ -271,13 +273,20 @@ class FoodList:
         self.send_message(update, context, to_write)
 
     def stop(self, update, context):
-        pass
+        self.keyboard = None
+        to_write = MESSAGES["stop"]
+        self.send_message(update, context, to_write)
+        self.updater.stop()
 
     def help(self, update, context):
-        pass
+        self.keyboard = None
+        to_write = MESSAGES["unknown"]
+        self.send_message(update, context, to_write)
 
     def unknown(self, update, context):
-        pass
+        self.keyboard = None
+        to_write = MESSAGES["unknown"]
+        self.send_message(update, context, to_write)
 
     def send_message(self, update, context, text):
         context.bot.send_message(chat_id=update.effective_chat.id,
