@@ -117,11 +117,14 @@ class FoodList:
         if value is None:
             self._keyboard = telegram.ReplyKeyboardRemove()
         elif value == "add_ingridients":
-            self._keyboard = [[key] for key in self.ingridients]
+            keyboard = [[key] for key in self.ingridients]
+            self._keyboard = telegram.ReplyKeyboardMarkup(keyboard)
         elif value == "remove_ingridients":
-            self._keyboard = [[key] for key in self.list]
+            keyboard = [[key] for key in self.list]
+            self._keyboard = telegram.ReplyKeyboardMarkup(keyboard)
         elif value == "add_meals":
-            self._keyboard = [[key] for key in self.meal_list]
+            keyboard = [[key] for key in self.meal_list]
+            self._keyboard = telegram.ReplyKeyboardMarkup(keyboard)
 
     def telegram_bot_init(self):
         # ussed for debugging
@@ -172,35 +175,72 @@ class FoodList:
         unknown_handler = MessageHandler(Filters.command, self.unknown)
         self.dispatcher.add_handler(unknown_handler)
 
-    def text_message(self):
+    def text_message(self, update, context):
         pass
 
-    def file_message(self):
+    def file_message(self, update, context):
         pass
 
-    def start(self):
+    def start(self, update, context):
+        # we get user language
+        self.language_code = update._effective_user.language_code
+        # greeting message is send
+        to_write = MESSAGES["start1"]
+        self.keyboard = None
+        self.send_message(update, context, to_write)
+        # we check if the user has associated files
+        meals_file_name = str(update.message.chat.id) + "_meals" + ".csv"
+        ingridients_file_name = str(update.message.chat.id) + "_ingridients" +\
+            ".csv"
+        # if the user does have files
+        if os.path.exists(meals_file_name) and\
+                os.path.exists(ingridients_file_name):
+            # second start message is send
+            to_write = MESSAGES["start2"]
+            self.send_message(update, context, to_write)
+            # instances of  meals and ingridients are created
+            self.instance_ingridients(ingridients_file_name)
+            self.instance_meals(meals_file_name)
+            # we set this bools to False so no more files are proccesed
+            self.loading_meals = False
+            self.loading_ingridients = False
+        # if the user does not have files
+        else:
+            # a message with instructions is send
+            to_write = MESSAGES["start3"]
+            self.send_message(update, context, to_write)
+
+    def load_meals(self, update, context):
         pass
 
-    def load_meals(self):
+    def load_ingridients(self, update, context):
         pass
 
-    def load_ingridients(self):
+    def add_ingridients(self, update, context):
         pass
 
-    def add_ingridients(self):
+    def remove_ingridients(self, update, context):
         pass
 
-    def remove_ingridients(self):
+    def add_meals(self, update, context):
         pass
 
-    def add_meals(self):
+    def stop(self, update, context):
         pass
 
-    def stop(self):
+    def help(self, update, context):
         pass
 
-    def help(self):
+    def unknown(self, update, context):
         pass
 
-    def unknown(self):
-        pass
+    def send_message(self, update, context, text):
+        context.bot.send_message(chat_id=update.effective_chat.id,
+                                 text=text, replay_markup=self.keyboard,
+                                 parse_mode=telegram.ParseMode.MARKDOWN)
+
+    def instance_ingridients(self, path):
+        self.ingridients = functions.load_ingridients(path)
+
+    def instance_meals(self, path):
+        self.meal_list = functions.load_meals(path, self.ingridients)
