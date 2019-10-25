@@ -4,11 +4,11 @@ MESSAGES = {
  los ingredientes a tu lista de compras.",
     "start2": "Estos son los comandos que puedes usar:\n\
 /start comienza la interacción entre nosotros\n\
-/add_meal desplegará  tus comidas para que puedas agregarlas a la lista\n\
-/add_item desplegará ingredientes para que puedas agregarlos a la lista. Si\
+/add_meals desplegará  tus comidas para que puedas agregarlas a la lista\n\
+/add_ingridients desplegará ingredientes para que puedas agregarlos a la lista. Si\
  quieres agregar algo que no esté en las opciones utiliza el teclado para\
  escribir lo que quieras\n\
-/remove_item te permite eliminar algún elemento de la lista. Sólo selecciona\
+/remove_ingridients te permite eliminar algún elemento de la lista. Sólo selecciona\
  el que quieras sacar entre las opciones que aparecerán.\n\
 /help te explicará qué hacen los comandos\n\
 Si quieres actualizar tus ingredientes o comidas puedes volver a utilizar\
