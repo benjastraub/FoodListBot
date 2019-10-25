@@ -8,12 +8,13 @@ Meal = namedtuple("Meal", ["name", "type", "category", "ingridients"])
 
 def list_to_text(ingridients_list):
     """
-    Recieves a list with tuples (ingridient_name, quantity) and returns
-    a text with the data
+    Recieves a list with lists
+    [ingridient_instance, quantity] and returns a
+    text with the data
     """
-    to_return = ""
+    to_return = "List\n"
     for (ingridient, quantity) in ingridients_list:
-        to_return = f"{to_return}{ingridient} {quantity}\n"
+        to_return = f"{to_return}{ingridient.name} {quantity}\n"
     return to_return
 
 
@@ -23,10 +24,10 @@ def load_ingridients(path):
     """
     with open(file=path, encoding="utf-8-sig", mode="r") as file:
         ingridients = {}  # ingridient_name: ingridient_instance
-        header = [x for x in file.readline().strip.splir(";")]
+        header = [x for x in file.readline().strip().split(";")]
         lines = file.readlines()
         for line in lines:
-            line = line.strip.split(";")
+            line = line.strip().split(";")
             # strings are converte to apropiate type
             data = map(lambda x: int(x) if x.isdigit() else x, line)
             arguments = dict(zip(header, data))
@@ -42,12 +43,12 @@ def load_meals(path, ingridients):
     """
     with open(file=path, encoding="utf-8-sig", mode="r") as file:
         meals = {}  # meal_name: Meal_namedtuple
-        header = [x for x in file.readline().strip.split(";")]
+        header = [x for x in file.readline().strip().split(";")]
         lines = file.readlines()
         for line in lines:
-            line = line.strip.split(";")
+            line = line.strip().split(";")
             # strings are converte to apropiate type
-            data = map(lambda x: [y.strip() for y in x.strip.split(",")]
+            data = map(lambda x: [y.strip() for y in x.strip().split(",")]
                        if "," in x else int(x) if x.isdigit() else x, line)
             arguments = dict(zip(header, data))
             # name of ingridients are replaces with their instances

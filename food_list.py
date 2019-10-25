@@ -5,7 +5,6 @@ import logging
 # project
 import token_key
 import functions
-import parameters
 from bot_messages import MESSAGES
 # others
 import os
@@ -162,7 +161,7 @@ class FoodList:
         # /remove_ingridients
         remove_ingridients_handler = CommandHandler("remove_ingridients",
                                                     self.remove_ingridients)
-        self.dispatcher.remove_handler(remove_ingridients_handler)
+        self.dispatcher.add_handler(remove_ingridients_handler)
         # /add_meals
         add_meals_handler = CommandHandler("add_meals", self.add_meals)
         self.dispatcher.add_handler(add_meals_handler)
@@ -198,6 +197,10 @@ class FoodList:
                 self.list[typed_ingridient][1] -= 1
                 if self.list[typed_ingridient][1] == 0:
                     del self.list[typed_ingridient]
+        to_write = functions.list_to_text(sorted(self.list.values(),
+                                          key=lambda x: x[0].category))
+        print(to_write)
+        self.send_message(update, context, to_write)
 
     def file_message(self, update, context):
         if self.loading_meals:
@@ -216,7 +219,7 @@ class FoodList:
         # greeting message is send
         to_write = MESSAGES["start1"]
         self.keyboard = None
-        self.send_message(update, context, to_write)
+        self.send_message(update, context, to_write, False)
         # we check if the user has associated files
         meals_file_name = str(update.message.chat.id) + "_meals" + ".csv"
         ingridients_file_name = str(update.message.chat.id) + "_ingridients" +\
@@ -226,7 +229,7 @@ class FoodList:
                 os.path.exists(ingridients_file_name):
             # second start message is send
             to_write = MESSAGES["start2"]
-            self.send_message(update, context, to_write)
+            self.send_message(update, context, to_write, False)
             # instances of  meals and ingridients are created
             self.instance_ingridients(ingridients_file_name)
             self.instance_meals(meals_file_name)
@@ -237,61 +240,65 @@ class FoodList:
         else:
             # a message with instructions is send
             to_write = MESSAGES["start3"]
-            self.send_message(update, context, to_write)
+            self.send_message(update, context, to_write, False)
 
     def load_meals(self, update, context):
         self.keyboard = None
         to_write = MESSAGES["load_meals"]
-        self.send_message(update, context, to_write)
+        self.send_message(update, context, to_write, False)
         self.loading_meals = True
 
     def load_ingridients(self, update, context):
         self.keyboard = None
         to_write = MESSAGES["load_ingridients"]
-        self.send_message(update, context, to_write)
+        self.send_message(update, context, to_write, False)
         self.loading_ingridients = True
 
     def add_ingridients(self, update, context):
         self.keyboard = "add_ingridients"
         self.adding_ingridients = True
-        to_write = functions.list_to_text(sorted(self.list.items(),
-                                          key=lambda k: k[0].category))
+        to_write = functions.list_to_text(sorted(self.list.values(),
+                                          key=lambda x: x[0].category))
         self.send_message(update, context, to_write)
 
     def remove_ingridients(self, update, context):
         self.keyboard = "remove_ingridients"
         self.removing_ingridients = True
-        to_write = functions.list_to_text(sorted(self.list.items(),
-                                          key=lambda k: k[0].category))
+        to_write = functions.list_to_text(sorted(self.list.values(),
+                                          key=lambda x: x[0].category))
         self.send_message(update, context, to_write)
 
     def add_meals(self, update, context):
         self.keyboard = "add_meals"
         self.adding_meals = True
-        to_write = functions.list_to_text(sorted(self.list.items(),
-                                          key=lambda k: k[0].category))
+        to_write = functions.list_to_text(sorted(self.list.values(),
+                                          key=lambda x: x[0].category))
         self.send_message(update, context, to_write)
 
     def stop(self, update, context):
         self.keyboard = None
         to_write = MESSAGES["stop"]
-        self.send_message(update, context, to_write)
+        self.send_message(update, context, to_write, False)
         self.updater.stop()
 
     def help(self, update, context):
         self.keyboard = None
         to_write = MESSAGES["unknown"]
-        self.send_message(update, context, to_write)
+        self.send_message(update, context, to_write, False)
 
     def unknown(self, update, context):
         self.keyboard = None
         to_write = MESSAGES["unknown"]
-        self.send_message(update, context, to_write)
+        self.send_message(update, context, to_write, False)
 
-    def send_message(self, update, context, text):
-        context.bot.send_message(chat_id=update.effective_chat.id,
-                                 text=text, replay_markup=self.keyboard,
-                                 parse_mode=telegram.ParseMode.MARKDOWN)
+    def send_message(self, update, context, text, markdown=True):
+        if markdown:
+            context.bot.send_message(chat_id=update.effective_chat.id,
+                                     text=text, reply_markup=self.keyboard,
+                                     parse_mode=telegram.ParseMode.MARKDOWN)
+        else:
+            context.bot.send_message(chat_id=update.effective_chat.id,
+                                     text=text, reply_markup=self.keyboard)
 
     def instance_ingridients(self, path):
         self.ingridients = functions.load_ingridients(path)
