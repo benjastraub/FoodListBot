@@ -1,4 +1,5 @@
 from collections import namedtuple
+from ingridient import Ingridient
 
 
 # instances of meals will be namedtuples
@@ -14,3 +15,44 @@ def list_to_text(ingridients_list):
     for (ingridient, quantity) in ingridients_list:
         to_return = f"{to_return}{ingridient} {quantity}\n"
     return to_return
+
+
+def load_ingridients(path):
+    """
+    Reads csv file from path and return instances of Ingridient
+    """
+    with open(file=path, encoding="utf-8-sig", mode="r") as file:
+        ingridients = {}  # ingridient_name: ingridient_instance
+        header = [x for x in file.readline().strip.splir(";")]
+        lines = file.readlines()
+        for line in lines:
+            line = line.strip.split(";")
+            # strings are converte to apropiate type
+            data = map(lambda x: int(x) if x.isdigit() else x, line)
+            arguments = dict(zip(header, data))
+            instance = Ingridient(**arguments)
+            ingridients[instance.name] = instance
+        return ingridients
+
+
+def load_meals(path, ingridients):
+    """
+    Reads csv file from path and return namedtuples that contains the info
+    and the instances from ingridients
+    """
+    with open(file=path, encoding="utf-8-sig", mode="r") as file:
+        meals = {}  # meal_name: Meal_namedtuple
+        header = [x for x in file.readline().strip.split(";")]
+        lines = file.readlines()
+        for line in lines:
+            line = line.strip.split(";")
+            # strings are converte to apropiate type
+            data = map(lambda x: [y.strip() for y in x.strip.split(",")]
+                       if "," in x else int(x) if x.isdigit() else x, line)
+            arguments = dict(zip(header, data))
+            # name of ingridients are replaces with their instances
+            arguments["ingridients"] = [ingridients[ingridient] for ingridient
+                                        in arguments["ingridients"]]
+            meal = Meal(**arguments)
+            meals[meal.name] = meal
+        return meals
