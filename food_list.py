@@ -199,7 +199,6 @@ class FoodList:
                     del self.list[typed_ingridient]
         to_write = functions.list_to_text(sorted(self.list.values(),
                                           key=lambda x: x[0].category))
-        print(to_write)
         self.send_message(update, context, to_write)
 
     def file_message(self, update, context):
