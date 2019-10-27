@@ -184,6 +184,9 @@ class FoodList:
                     self.list[ingridient.name][1] += 1
                 else:
                     self.list[ingridient.name] = [ingridient, 1]
+            to_write = functions.list_to_text(sorted(self.list.values(),
+                                              key=lambda x: x[0].category))
+            self.send_message(update, context, to_write)
         elif self.adding_ingridients:
             typed_ingridient = update.message.text
             ingridient = self.ingridients.get(typed_ingridient)
@@ -191,15 +194,18 @@ class FoodList:
                 self.list[ingridient.name][1] += 1
             else:
                 self.list[ingridient.name] = [ingridient, 1]
+            to_write = functions.list_to_text(sorted(self.list.values(),
+                                              key=lambda x: x[0].category))
+            self.send_message(update, context, to_write)
         elif self.removing_ingridients:
             typed_ingridient = update.message.text
             if typed_ingridient in self.list.keys():
                 self.list[typed_ingridient][1] -= 1
                 if self.list[typed_ingridient][1] == 0:
                     del self.list[typed_ingridient]
-        to_write = functions.list_to_text(sorted(self.list.values(),
-                                          key=lambda x: x[0].category))
-        self.send_message(update, context, to_write)
+            to_write = functions.list_to_text(sorted(self.list.values(),
+                                              key=lambda x: x[0].category))
+            self.send_message(update, context, to_write)
 
     def file_message(self, update, context):
         if self.loading_meals:
