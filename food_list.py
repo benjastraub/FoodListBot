@@ -165,6 +165,9 @@ class FoodList:
         # /add_meals
         add_meals_handler = CommandHandler("add_meals", self.add_meals)
         self.dispatcher.add_handler(add_meals_handler)
+        # /see_list
+        see_list_handler = CommandHandler("see_list", self.see_list)
+        self.dispatcher.add_handler(see_list_handler)
         # /stop
         stop_handler = CommandHandler("stop", self.stop)
         self.dispatcher.add_handler(stop_handler)
@@ -285,6 +288,14 @@ class FoodList:
     def add_meals(self, update, context):
         self.keyboard = "add_meals"
         self.adding_meals = True
+        to_write = functions.list_to_text(sorted(self.list.values(),
+                                          key=lambda x: x[0].category))
+        self.send_message(update, context, to_write)
+
+    def see_list(self, update, context):
+        self.keyboard = None
+        self.adding_meals = True
+        self.adding_meals = False
         to_write = functions.list_to_text(sorted(self.list.values(),
                                           key=lambda x: x[0].category))
         self.send_message(update, context, to_write)
