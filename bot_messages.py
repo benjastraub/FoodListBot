@@ -5,11 +5,11 @@ MESSAGES = {
     "start2": "Estos son los comandos que puedes usar:\n\
 /start comienza la interacción entre nosotros\n\
 /add_meals desplegará  tus comidas para que puedas agregarlas a la lista\n\
-/add_ingridients desplegará ingredientes para que puedas agregarlos a la lista. Si\
- quieres agregar algo que no esté en las opciones utiliza el teclado para\
- escribir lo que quieras\n\
-/remove_ingridients te permite eliminar algún elemento de la lista. Sólo selecciona\
- el que quieras sacar entre las opciones que aparecerán.\n\
+/add_ingridients desplegará ingredientes para que puedas agregarlos a la\
+  lista. Si quieres agregar algo que no esté en las opciones utiliza el\
+ teclado para escribir lo que quieras\n\
+/remove_ingridients te permite eliminar algún elemento de la lista. Sólo\
+ selecciona el que quieras sacar entre las opciones que aparecerán.\n\
 /help te explicará qué hacen los comandos\n\
 Si quieres actualizar tus ingredientes o comidas puedes volver a utilizar\
  /load_meals y /load_ingridients. Recuerda que después de utilizar cualquiera\
@@ -22,6 +22,11 @@ Si quieres actualizar tus ingredientes o comidas puedes volver a utilizar\
     "stop": "Adios",
     "unknown": "No conozco ese comando",
     "load_meals": "Envía el archivo con las comidas",
-    "load_ingridients": "Envía el archivo con los ingredientes"
+    "load_ingridients": "Envía el archivo con los ingredientes",
+    "meal_error": "Debes ingresar una comida existente en la base de datos",
+    "add_ingridient_error": "Debes ingresar un ingrediente existente en la\
+ base de datos",
+    "remove_ingridient_error": "Debes ingresar un ingrediente que esté en la\
+ lista"
 }
 MESSAGES["help"] = MESSAGES["start2"]

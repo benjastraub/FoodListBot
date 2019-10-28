@@ -179,32 +179,41 @@ class FoodList:
         if self.adding_meals:
             typed_meal = update.message.text
             meal = self.meal_list.get(typed_meal)
-            for ingridient in meal.ingridients:
-                if ingridient.name in self.list.keys():
-                    self.list[ingridient.name][1] += 1
-                else:
-                    self.list[ingridient.name] = [ingridient, 1]
-            to_write = functions.list_to_text(sorted(self.list.values(),
-                                              key=lambda x: x[0].category))
+            try:
+                for ingridient in meal.ingridients:
+                    if ingridient.name in self.list.keys():
+                        self.list[ingridient.name][1] += 1
+                    else:
+                        self.list[ingridient.name] = [ingridient, 1]
+                to_write = functions.list_to_text(sorted(self.list.values(),
+                                                  key=lambda x: x[0].category))
+            except AttributeError:
+                to_write = MESSAGES["meal_error"]
             self.send_message(update, context, to_write)
         elif self.adding_ingridients:
             typed_ingridient = update.message.text
             ingridient = self.ingridients.get(typed_ingridient)
-            if ingridient.name in self.list.keys():
-                self.list[ingridient.name][1] += 1
-            else:
-                self.list[ingridient.name] = [ingridient, 1]
-            to_write = functions.list_to_text(sorted(self.list.values(),
-                                              key=lambda x: x[0].category))
+            try:
+                if ingridient.name in self.list.keys():
+                    self.list[ingridient.name][1] += 1
+                else:
+                    self.list[ingridient.name] = [ingridient, 1]
+                to_write = functions.list_to_text(sorted(self.list.values(),
+                                                  key=lambda x: x[0].category))
+            except AttributeError:
+                to_write = MESSAGES["add_ingridient_error"]
             self.send_message(update, context, to_write)
         elif self.removing_ingridients:
             typed_ingridient = update.message.text
-            if typed_ingridient in self.list.keys():
+            try:
                 self.list[typed_ingridient][1] -= 1
                 if self.list[typed_ingridient][1] == 0:
                     del self.list[typed_ingridient]
-            to_write = functions.list_to_text(sorted(self.list.values(),
-                                              key=lambda x: x[0].category))
+                to_write = functions.list_to_text(sorted(self.list.values(),
+                                                  key=lambda x: x[0].category))
+            except KeyError:
+                to_write = MESSAGES["remove_ingridient_error"]
+            self.keyboard = "remove_ingridients"
             self.send_message(update, context, to_write)
 
     def file_message(self, update, context):
