@@ -24,7 +24,7 @@ def load_ingridients(path):
     """
     with open(file=path, encoding="utf-8-sig", mode="r") as file:
         ingridients = {}  # ingridient_name: ingridient_instance
-        header = [x for x in file.readline().strip().split(";")]
+        header = [x.strip() for x in file.readline().strip().split(";")]
         lines = file.readlines()
         for line in lines:
             line = line.strip().split(";")
@@ -43,13 +43,14 @@ def load_meals(path, ingridients):
     """
     with open(file=path, encoding="utf-8-sig", mode="r") as file:
         meals = {}  # meal_name: Meal_namedtuple
-        header = [x for x in file.readline().strip().split(";")]
+        header = [x.strip() for x in file.readline().strip().split(";")]
         lines = file.readlines()
         for line in lines:
             line = line.strip().split(";")
             # strings are converte to apropiate type
             data = map(lambda x: [y.strip() for y in x.strip().split(",")]
-                       if "," in x else int(x) if x.isdigit() else x, line)
+                       if "," in x else int(x) if x.isdigit() else x.strip(),
+                       line)
             arguments = dict(zip(header, data))
             # name of ingridients are replaces with their instances
             arguments["ingridients"] = [ingridients[ingridient] for ingridient
