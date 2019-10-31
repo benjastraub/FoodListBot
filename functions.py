@@ -3,7 +3,8 @@ from ingridient import Ingridient
 
 
 # instances of meals will be namedtuples
-Meal = namedtuple("Meal", ["name", "type", "category", "ingridients"])
+Meal = namedtuple("Meal", ["name", "type", "category", "ingridients",
+                           "quantity"])
 
 
 def list_to_text(ingridients_list):
@@ -33,6 +34,7 @@ def load_ingridients(path):
             arguments = dict(zip(header, data))
             instance = Ingridient(**arguments)
             ingridients[instance.name] = instance
+        print(ingridients)
         return ingridients
 
 
@@ -48,7 +50,8 @@ def load_meals(path, ingridients):
         for line in lines:
             line = line.strip().split(";")
             # strings are converte to apropiate type
-            data = map(lambda x: [y.strip() for y in x.strip().split(",")]
+            data = map(lambda x: [int(y.strip()) if y.strip().isdigit()
+                                  else y.strip() for y in x.strip().split(",")]
                        if "," in x else int(x) if x.isdigit() else x.strip(),
                        line)
             arguments = dict(zip(header, data))
@@ -57,4 +60,5 @@ def load_meals(path, ingridients):
                                         in arguments["ingridients"]]
             meal = Meal(**arguments)
             meals[meal.name] = meal
+        print(meals)
         return meals
